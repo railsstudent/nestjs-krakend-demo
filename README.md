@@ -34,9 +34,12 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Start KrakenD gateway in docker
+## Update the host ip in krakend.json 
+
+## Start Krakend gateway in docker
 
 ```bash
+docker pull devopsfaith/krakend
 docker run -p 8080:8080 -v $PWD:/etc/krakend/ devopsfaith/krakend run --config /etc/krakend/krakend.json
 ```
 
