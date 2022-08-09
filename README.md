@@ -1,6 +1,6 @@
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Demo krakend gateway to proxy and protect requests to NestJS backend
 
 ## Installation
 
@@ -34,7 +34,20 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Update the host ip in krakend.json 
+## Update the host ip and port in krakend.json 
+```json
+
+"backend": [
+    {
+      "url_pattern": "/",
+      "encoding": "string",
+      "sd": "static",
+      "method": "GET",
+      "disable_host_sanitize": false,
+      "host": ["http://<ip>:<port>"]
+    }
+]
+```
 
 ## Start Krakend gateway in docker
 
