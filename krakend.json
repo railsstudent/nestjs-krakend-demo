@@ -1,0 +1,165 @@
+{
+  "$schema": "https://www.krakend.io/schema/v3.json",
+  "version": 3,
+  "name": "NestJS Kong Demo - API Gateway",
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "port": 8080,
+  "endpoints": [
+    {
+      "endpoint": "/",
+      "method": "GET",
+      "output_encoding": "string",
+      "backend": [
+        {
+          "url_pattern": "/",
+          "encoding": "string",
+          "sd": "static",
+          "method": "GET",
+          "disable_host_sanitize": false,
+          "host": ["http://192.168.1.127:3000"]
+        }
+      ],
+      "extra_config": {
+        "qos/ratelimit/router": {
+          "max_rate": 500,
+          "client_max_rate": 100,
+          "strategy": "ip"
+        }
+      }
+    },
+    {
+      "endpoint": "/v1/foo",
+      "method": "GET",
+      "output_encoding": "string",
+      "backend": [
+        {
+          "url_pattern": "/v1/foo",
+          "encoding": "string",
+          "sd": "static",
+          "method": "GET",
+          "host": ["http://192.168.1.127:3000"],
+          "disable_host_sanitize": false
+        }
+      ],
+      "extra_config": {
+        "qos/ratelimit/router": {
+          "max_rate": 50,
+          "client_max_rate": 50,
+          "strategy": "ip"
+        }
+      }
+    },
+    {
+      "endpoint": "/v2/foo",
+      "method": "GET",
+      "output_encoding": "string",
+      "backend": [
+        {
+          "url_pattern": "/v2/foo",
+          "encoding": "string",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {
+            "qos/ratelimit/proxy": {
+              "max_rate": 100,
+              "capacity": 100
+            }
+          },
+          "host": ["http://192.168.1.127:3000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/bar",
+      "method": "GET",
+      "output_encoding": "string",
+      "backend": [
+        {
+          "url_pattern": "/bar",
+          "encoding": "string",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {
+            "qos/ratelimit/proxy": {
+              "max_rate": 200,
+              "capacity": 200
+            }
+          },
+          "host": ["http://192.168.1.127:3000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/foo/{id}",
+      "method": "GET",
+      "output_encoding": "string",
+      "backend": [
+        {
+          "url_pattern": "/v1/foo/{id}",
+          "encoding": "string",
+          "sd": "static",
+          "method": "GET",
+          "host": ["http://192.168.1.127:3000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/v2/foo/{id}",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/v2/foo/{id}",
+          "encoding": "string",
+          "sd": "static",
+          "method": "GET",
+          "host": ["http://192.168.1.127:3000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/bar/error",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/bar/error",
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "host": ["http://192.168.1.127:3000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/bar",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {
+        "qos/ratelimit/router": {
+          "max_rate": 1000,
+          "client_max_rate": 1000,
+          "strategy": "ip"
+        }
+      },
+      "input_query_strings": ["name", "age"],
+      "backend": [
+        {
+          "url_pattern": "/bar",
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "host": ["http://192.168.1.127:3000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    }
+  ]
+}
